@@ -1,0 +1,124 @@
+# ==============================================================================
+# python-gpu-job.yaml — Template for GPU Jobs (PyTorch / YOLO / Deep Learning)
+# ==============================================================================
+# Key GPU features included in this template:
+#   - Requests 1 NVIDIA GPU (`nvidia.com/gpu: "1"`)
+#   - Mounts a 4 GiB in-memory `/dev/shm` volume (required by PyTorch DataLoader
+#     multi-worker shared memory so training does not crash with Bus Error!)
+#   - Uses fast local scratch space (`/app/workspace`) for unzipping datasets
+#     before syncing trained weights back to CESNET S3 (`peg-bucket`).
+#
+# How to use:
+#   1. Put your training script into a ConfigMap:
+#        kubectl create configmap my-gpu-script -n stenc-ns \
+#          --from-file=train.py=train.py \
+#          --dry-run=client -o yaml | kubectl apply -f -
+#   2. Submit the GPU job:
+#        kubectl delete job python-gpu-job -n stenc-ns --ignore-not-found
+#        kubectl apply -f python-gpu-job.yaml
+#   3. Stream live logs:
+#        kubectl logs -f job/python-gpu-job -n stenc-ns
+# ==============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: python-gpu-job
+  namespace: stenc-ns
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      # Mandatory CERIT-SC Pod security context
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: gpu-worker
+        image: ultralytics/ultralytics:latest
+        imagePullPolicy: Always
+        workingDir: /app/workspace
+        # Mandatory CERIT-SC Container security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "=== Configuring non-root GPU environment ==="
+          export HOME=/app
+          export PATH=/app/.local/bin:$PATH
+          export YOLO_CONFIG_DIR=/app/.config/Ultralytics
+          mkdir -p /app/workspace /app/.config/Ultralytics
+          cd /app/workspace
+
+          echo "=== Checking assigned NVIDIA GPU ==="
+          nvidia-smi
+
+          echo "=== Installing S3 CLI & boto3 ==="
+          pip install --user --quiet --no-warn-script-location awscli boto3
+
+          # Optional: Download dataset archive from CESNET S3 before running script
+          # aws --endpoint-url "$S3_ENDPOINT" s3 cp "s3://$S3_BUCKET/Ostatni/YourProject/dataset.zip" .
+
+          echo "=== Starting GPU script (/scripts/train.py) ==="
+          python3 -u /scripts/train.py
+
+          # Optional: Sync output runs/weights back to CESNET S3
+          # aws --endpoint-url "$S3_ENDPOINT" s3 sync ./runs/ "s3://$S3_BUCKET/Ostatni/YourProject/runs/"
+
+          echo "=== GPU Job Completed! ==="
+        env:
+        - name: HOME
+          value: "/app"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: S3_ENDPOINT
+          value: "https://s3.cl4.du.cesnet.cz"
+        - name: S3_BUCKET
+          value: "peg-bucket"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: access-key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: secret-key
+        resources:
+          requests:
+            cpu: "4"
+            memory: "12Gi"
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: "6"
+            memory: "18Gi"
+            nvidia.com/gpu: "1"
+        volumeMounts:
+        - name: dshm
+          mountPath: /dev/shm
+        - name: scripts-vol
+          mountPath: /scripts
+          readOnly: true
+        - name: app-vol
+          mountPath: /app
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 4Gi
+      - name: scripts-vol
+        configMap:
+          name: my-gpu-script
+      - name: app-vol
+        emptyDir: {}
+

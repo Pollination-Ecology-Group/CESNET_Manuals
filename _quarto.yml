@@ -1,0 +1,46 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - 01_CESNET_S3_Storage_Manual.qmd
+    - 02_Kubernetes_Getting_Started.qmd
+    - 03_Running_R_and_Python_Scripts_on_K8s.qmd
+    - 04_Deploying_Web_Apps_on_K8s.qmd
+  resources:
+    - "*.pdf"
+    - "01_CESNET_S3_Storage_Manual.md"
+    - "02_Kubernetes_Getting_Started.md"
+    - "03_Running_R_and_Python_Scripts_on_K8s.md"
+    - "04_Deploying_Web_Apps_on_K8s.md"
+    - "templates/**"
+
+website:
+  title: "CESNET S3 & K8s Manuals"
+  navbar:
+    background: primary
+    search: true
+    left:
+      - href: index.qmd
+        text: "Home"
+      - href: 01_CESNET_S3_Storage_Manual.qmd
+        text: "1. S3 Storage"
+      - href: 02_Kubernetes_Getting_Started.qmd
+        text: "2. K8s Setup & Quotas"
+      - href: 03_Running_R_and_Python_Scripts_on_K8s.qmd
+        text: "3. R & Python Jobs"
+      - href: 04_Deploying_Web_Apps_on_K8s.qmd
+        text: "4. Web Apps"
+    right:
+      - icon: github
+        href: https://github.com/Pollination-Ecology-Group/CESNET_Manuals
+  page-footer:
+    left: "Pollination Ecology Group (Handrkov) — Charles University & CAS"
+    right: "Powered by Quarto & CESNET e-INFRA CZ"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    code-copy: true

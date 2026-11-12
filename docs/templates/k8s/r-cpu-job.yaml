@@ -1,0 +1,109 @@
+# ==============================================================================
+# r-cpu-job.yaml — Template for Running an R Script on CESNET Kubernetes
+# ==============================================================================
+# How to use:
+#   1. Upload your R script (e.g. my_analysis.R) into a Kubernetes ConfigMap:
+#        kubectl create configmap my-r-script -n stenc-ns \
+#          --from-file=my_analysis.R=my_analysis.R \
+#          --dry-run=client -o yaml | kubectl apply -f -
+#
+#   2. Submit this job:
+#        kubectl delete job r-analysis-job -n stenc-ns --ignore-not-found
+#        kubectl apply -f r-cpu-job.yaml
+#
+#   3. Watch live output logs:
+#        kubectl logs -f job/r-analysis-job -n stenc-ns
+# ==============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: r-analysis-job
+  namespace: stenc-ns
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      # Mandatory CERIT-SC Pod security context (must run as non-root user)
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: r-worker
+        image: rocker/tidyverse:4.4.1
+        imagePullPolicy: IfNotPresent
+        workingDir: /app/workspace
+        # Mandatory CERIT-SC Container security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "=== Setting up writable directories for non-root user ==="
+          mkdir -p /app/workspace /app/R_libs /app/.cache
+          export HOME=/app
+          export R_LIBS_USER=/app/R_libs
+
+          echo "=== Installing extra R packages (if needed) ==="
+          Rscript -e '
+            options(repos = c(CRAN = "https://cloud.r-project.org"))
+            pkgs <- c("aws.s3", "data.table", "future", "furrr")
+            to_install <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+            if (length(to_install) > 0) install.packages(to_install, lib = Sys.getenv("R_LIBS_USER"), Ncpus = 4)
+          '
+
+          echo "=== Running R script (/scripts/my_analysis.R) ==="
+          Rscript /scripts/my_analysis.R
+
+          echo "=== Job completed successfully! ==="
+        env:
+        - name: HOME
+          value: "/app"
+        - name: R_LIBS_USER
+          value: "/app/R_libs"
+        - name: S3_ENDPOINT
+          value: "https://s3.cl4.du.cesnet.cz"
+        - name: AWS_S3_ENDPOINT
+          value: "s3.cl4.du.cesnet.cz"
+        - name: AWS_DEFAULT_REGION
+          value: ""
+        - name: S3_BUCKET
+          value: "peg-bucket"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: access-key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: secret-key
+        resources:
+          requests:
+            cpu: "4"
+            memory: "8Gi"
+          limits:
+            cpu: "8"
+            memory: "16Gi"
+        volumeMounts:
+        - name: scripts-vol
+          mountPath: /scripts
+          readOnly: true
+        - name: app-vol
+          mountPath: /app
+      volumes:
+      - name: scripts-vol
+        configMap:
+          name: my-r-script
+      - name: app-vol
+        emptyDir: {}
+

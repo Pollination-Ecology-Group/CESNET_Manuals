@@ -1,0 +1,133 @@
+# ==============================================================================
+# web-app-deployment.yaml — Template for Hosting a Web App on CESNET Kubernetes
+# ==============================================================================
+# Deploys a Python (Flask/Waitress/Streamlit) or R Shiny web application with
+# automatic Let's Encrypt HTTPS on:
+#   https://<YOUR-APP-NAME>-stenc.dyn.cloud.e-infra.cz
+#
+# How to deploy or update:
+#   1. Put your app files (e.g. app.py, index.html) into a ConfigMap:
+#        kubectl create configmap my-webapp-src -n stenc-ns \
+#          --from-file=app.py=app.py \
+#          --dry-run=client -o yaml | kubectl apply -f -
+#   2. Apply this file:
+#        kubectl apply -f web-app-deployment.yaml
+#   3. Restart deployment after updating code:
+#        kubectl rollout restart deployment/my-webapp -n stenc-ns
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-webapp
+  namespace: stenc-ns
+  labels:
+    app: my-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-webapp
+  template:
+    metadata:
+      labels:
+        app: my-webapp
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: app
+        image: python:3.12-slim
+        workingDir: /app
+        command:
+        - sh
+        - -c
+        - |
+          pip install --user --quiet --no-warn-script-location flask waitress boto3 pandas
+          python -m waitress --port=8080 --threads=8 app:app
+        ports:
+        - containerPort: 8080
+        env:
+        - name: HOME
+          value: "/tmp"
+        - name: S3_ENDPOINT
+          value: "https://s3.cl4.du.cesnet.cz"
+        - name: S3_BUCKET
+          value: "peg-bucket"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: access-key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: secret-key
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: "1.5"
+            memory: 2Gi
+        volumeMounts:
+        - name: app-src
+          mountPath: /app
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: app-src
+        configMap:
+          name: my-webapp-src
+      - name: tmp
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-webapp
+  namespace: stenc-ns
+  labels:
+    app: my-webapp
+spec:
+  selector:
+    app: my-webapp
+  ports:
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-webapp
+  namespace: stenc-ns
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/tls-acme: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - my-webapp-stenc.dyn.cloud.e-infra.cz
+    secretName: my-webapp-stenc-dyn-cloud-e-infra-cz-tls
+  rules:
+  - host: my-webapp-stenc.dyn.cloud.e-infra.cz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-webapp
+            port:
+              number: 80
+

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-11-12">
+
+<title>Manual 2: Getting Started with CESNET Kubernetes (e-INFRA CZ / CERIT-SC) – CESNET S3 &amp; K8s Manuals</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-eaf8130eafb61d71739ff7ba1295ed3d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">CESNET S3 &amp; K8s Manuals</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./01_CESNET_S3_Storage_Manual.html"> 
+<span class="menu-text">1. S3 Storage</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./02_Kubernetes_Getting_Started.html" aria-current="page"> 
+<span class="menu-text">2. K8s Setup &amp; Quotas</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./03_Running_R_and_Python_Scripts_on_K8s.html"> 
+<span class="menu-text">3. R &amp; Python Jobs</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./04_Deploying_Web_Apps_on_K8s.html"> 
+<span class="menu-text">4. Web Apps</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Pollination-Ecology-Group/CESNET_Manuals"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#getting-access-to-e-infra-cz-rancher" id="toc-getting-access-to-e-infra-cz-rancher" class="nav-link active" data-scroll-target="#getting-access-to-e-infra-cz-rancher">1. Getting Access to e-INFRA CZ &amp; Rancher</a>
+  <ul class="collapse">
+  <li><a href="#step-1-ensure-you-have-an-active-e-infra-cz-metacentrum-account" id="toc-step-1-ensure-you-have-an-active-e-infra-cz-metacentrum-account" class="nav-link" data-scroll-target="#step-1-ensure-you-have-an-active-e-infra-cz-metacentrum-account">Step 1: Ensure You Have an Active e-INFRA CZ / MetaCentrum Account</a></li>
+  <li><a href="#step-2-log-into-the-rancher-web-ui" id="toc-step-2-log-into-the-rancher-web-ui" class="nav-link" data-scroll-target="#step-2-log-into-the-rancher-web-ui">Step 2: Log into the Rancher Web UI</a></li>
+  </ul></li>
+  <li><a href="#setting-up-kubectl-on-your-computer" id="toc-setting-up-kubectl-on-your-computer" class="nav-link" data-scroll-target="#setting-up-kubectl-on-your-computer">2. Setting Up <code>kubectl</code> on Your Computer</a>
+  <ul class="collapse">
+  <li><a href="#step-1-install-kubectl" id="toc-step-1-install-kubectl" class="nav-link" data-scroll-target="#step-1-install-kubectl">Step 1: Install <code>kubectl</code></a></li>
+  <li><a href="#step-2-download-kubeconfig.yaml-from-rancher" id="toc-step-2-download-kubeconfig.yaml-from-rancher" class="nav-link" data-scroll-target="#step-2-download-kubeconfig.yaml-from-rancher">Step 2: Download <code>kubeconfig.yaml</code> from Rancher</a></li>
+  <li><a href="#step-3-set-your-default-namespace-to-stenc-ns-and-test-connection" id="toc-step-3-set-your-default-namespace-to-stenc-ns-and-test-connection" class="nav-link" data-scroll-target="#step-3-set-your-default-namespace-to-stenc-ns-and-test-connection">Step 3: Set Your Default Namespace to <code>stenc-ns</code> and Test Connection</a></li>
+  </ul></li>
+  <li><a href="#mandatory-cerit-sc-security-rules-read-before-creating-pods" id="toc-mandatory-cerit-sc-security-rules-read-before-creating-pods" class="nav-link" data-scroll-target="#mandatory-cerit-sc-security-rules-read-before-creating-pods">3. Mandatory CERIT-SC Security Rules (Read Before Creating Pods!)</a>
+  <ul class="collapse">
+  <li><a href="#rule-1-must-run-as-a-non-root-user-uid-1000" id="toc-rule-1-must-run-as-a-non-root-user-uid-1000" class="nav-link" data-scroll-target="#rule-1-must-run-as-a-non-root-user-uid-1000">Rule 1: Must Run as a Non-Root User (<code>UID 1000</code>)</a></li>
+  <li><a href="#rule-2-must-drop-linux-capabilities-privilege-escalation" id="toc-rule-2-must-drop-linux-capabilities-privilege-escalation" class="nav-link" data-scroll-target="#rule-2-must-drop-linux-capabilities-privilege-escalation">Rule 2: Must Drop Linux Capabilities &amp; Privilege Escalation</a></li>
+  <li><a href="#rule-3-must-mount-a-writable-app-or-tmp-directory-emptydir" id="toc-rule-3-must-mount-a-writable-app-or-tmp-directory-emptydir" class="nav-link" data-scroll-target="#rule-3-must-mount-a-writable-app-or-tmp-directory-emptydir">Rule 3: Must Mount a Writable <code>/app</code> or <code>/tmp</code> Directory (<code>emptyDir</code>)</a></li>
+  <li><a href="#rule-4-always-specify-resource-requests-and-limits" id="toc-rule-4-always-specify-resource-requests-and-limits" class="nav-link" data-scroll-target="#rule-4-always-specify-resource-requests-and-limits">Rule 4: Always Specify Resource <code>requests</code> and <code>limits</code></a></li>
+  </ul></li>
+  <li><a href="#namespace-resource-quotas-cerit-sc-limits" id="toc-namespace-resource-quotas-cerit-sc-limits" class="nav-link" data-scroll-target="#namespace-resource-quotas-cerit-sc-limits">4. Namespace Resource Quotas &amp; CERIT-SC Limits</a>
+  <ul class="collapse">
+  <li><a href="#important-quota-tips-for-colleagues" id="toc-important-quota-tips-for-colleagues" class="nav-link" data-scroll-target="#important-quota-tips-for-colleagues">Important Quota Tips for Colleagues:</a></li>
+  </ul></li>
+  <li><a href="#essential-kubectl-cheat-sheet" id="toc-essential-kubectl-cheat-sheet" class="nav-link" data-scroll-target="#essential-kubectl-cheat-sheet">5. Essential <code>kubectl</code> Cheat Sheet</a></li>
+  <li><a href="#common-pod-statuses-explained" id="toc-common-pod-statuses-explained" class="nav-link" data-scroll-target="#common-pod-statuses-explained">6. Common Pod Statuses Explained</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="02_Kubernetes_Getting_Started.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Manual 2: Getting Started with CESNET Kubernetes (e-INFRA CZ / CERIT-SC)</h1>
+<p class="subtitle lead">Pollination Ecology Group (Handrkov) — Rancher, kubectl, and Security Rules</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 12, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Our group uses the <strong>CERIT-SC / e-INFRA CZ Kubernetes platform</strong> (<code>rancher.cloud.e-infra.cz</code>) to run compute-intensive R and Python scripts, train deep-learning models on NVIDIA GPUs, and host interactive web applications.</p>
+<p>This manual walks you through:</p>
+<ol type="1">
+<li>Logging into the Rancher web dashboard and getting access to our namespace (<code>stenc-ns</code>).</li>
+<li>Downloading your <code>kubeconfig.yaml</code> credentials file and installing the <code>kubectl</code> command-line tool.</li>
+<li>Understanding the <strong>mandatory CERIT-SC security policies</strong> (why pods fail if you don’t set <code>runAsNonRoot: true</code> and how to fix it).</li>
+<li>The essential <code>kubectl</code> command cheat sheet.</li>
+</ol>
+<hr>
+<section id="getting-access-to-e-infra-cz-rancher" class="level2">
+<h2 class="anchored" data-anchor-id="getting-access-to-e-infra-cz-rancher">1. Getting Access to e-INFRA CZ &amp; Rancher</h2>
+<section id="step-1-ensure-you-have-an-active-e-infra-cz-metacentrum-account" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-ensure-you-have-an-active-e-infra-cz-metacentrum-account">Step 1: Ensure You Have an Active e-INFRA CZ / MetaCentrum Account</h3>
+<ol type="1">
+<li>All academic staff and students at Czech universities (Charles University, CAS, etc.) can register for free at <a href="https://www.e-infra.cz/">e-infra.cz</a>.</li>
+<li>To access the Kubernetes cluster (<code>kuba-cluster</code>) and our shared project namespace (<code>stenc-ns</code>), ask Jakub to add your e-INFRA CZ / Perun username to the project namespace if you don’t see it yet.</li>
+</ol>
+</section>
+<section id="step-2-log-into-the-rancher-web-ui" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-log-into-the-rancher-web-ui">Step 2: Log into the Rancher Web UI</h3>
+<ol type="1">
+<li>Open your browser and go to: <strong><a href="https://rancher.cloud.e-infra.cz">https://rancher.cloud.e-infra.cz</a></strong></li>
+<li>Click <strong>Log in with Shibboleth / e-INFRA CZ</strong> and sign in using your institutional login (e.g., Charles University CAS / eduID.cz).</li>
+<li>In the Rancher home dashboard, click on the cluster <strong><code>kuba-cluster</code></strong>.</li>
+<li>In the top namespace filter bar, select <strong><code>stenc-ns</code></strong> so you only view our group’s Pods, Jobs, Deployments, ConfigMaps, and Secrets.</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="setting-up-kubectl-on-your-computer" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-kubectl-on-your-computer">2. Setting Up <code>kubectl</code> on Your Computer</h2>
+<p>While you can view logs and pods in the Rancher web browser, submitting scripts and streaming logs is much faster from your terminal using <code>kubectl</code>.</p>
+<section id="step-1-install-kubectl" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-install-kubectl">Step 1: Install <code>kubectl</code></h3>
+<ul>
+<li><p><strong>Linux (Ubuntu / Debian):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-LO</span> <span class="st">"https://dl.k8s.io/release/</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-L</span> <span class="at">-s</span> https://dl.k8s.io/release/stable.txt<span class="va">)</span><span class="st">/bin/linux/amd64/kubectl"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x kubectl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mv kubectl /usr/local/bin/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>macOS (Homebrew):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install kubectl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Windows (PowerShell / Winget):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>winget install <span class="op">-</span>e <span class="op">--</span>id Kubernetes<span class="op">.</span><span class="fu">kubectl</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ul>
+</section>
+<section id="step-2-download-kubeconfig.yaml-from-rancher" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-download-kubeconfig.yaml-from-rancher">Step 2: Download <code>kubeconfig.yaml</code> from Rancher</h3>
+<ol type="1">
+<li><p>In the Rancher web UI (<a href="https://rancher.cloud.e-infra.cz">https://rancher.cloud.e-infra.cz</a>), open <strong><code>kuba-cluster</code></strong>.</p></li>
+<li><p>In the <strong>top-right corner</strong> of the screen, click the <strong>Document icon (“Download KubeConfig”)</strong>.</p></li>
+<li><p>Save the downloaded file as <code>~/.kube/config</code> (Linux/macOS) or <code>C:\Users\&lt;YourUser&gt;\.kube\config</code> (Windows):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/.kube</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/Downloads/kuba-cluster.yaml ~/.kube/config</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> 600 ~/.kube/config</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>(Alternatively, if you keep <code>kubeconfig.yaml</code> inside a project folder, pass <code>--kubeconfig kubeconfig.yaml</code> or run <code>export KUBECONFIG=/path/to/kubeconfig.yaml</code>.)</em></p></li>
+</ol>
+</section>
+<section id="step-3-set-your-default-namespace-to-stenc-ns-and-test-connection" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-set-your-default-namespace-to-stenc-ns-and-test-connection">Step 3: Set Your Default Namespace to <code>stenc-ns</code> and Test Connection</h3>
+<p>Run this one-liner so you don’t have to type <code>-n stenc-ns</code> on every single command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> config set-context <span class="at">--current</span> <span class="at">--namespace</span><span class="op">=</span>stenc-ns</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now test your connection:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-n</span> stenc-ns</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you see a list of running/completed pods (or <code>No resources found in stenc-ns namespace</code>), your connection is working!</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Troubleshooting <code>error: You must be logged in to the server (Unauthorized)</code>:</strong> For security, Rancher API tokens inside <code>kubeconfig.yaml</code> expire periodically (every 30–90 days). Whenever you see <code>Unauthorized</code>, simply log into <a href="https://rancher.cloud.e-infra.cz">https://rancher.cloud.e-infra.cz</a>, click <strong>Download KubeConfig</strong> again, and replace <code>~/.kube/config</code>.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="mandatory-cerit-sc-security-rules-read-before-creating-pods" class="level2">
+<h2 class="anchored" data-anchor-id="mandatory-cerit-sc-security-rules-read-before-creating-pods">3. Mandatory CERIT-SC Security Rules (Read Before Creating Pods!)</h2>
+<p>CERIT-SC enforces strict <strong>Pod Security Standards (<code>restricted</code>)</strong> to protect the shared university infrastructure. <strong>If you copy a generic Kubernetes YAML example from the internet, the cluster will reject it immediately</strong> unless it includes the following four settings:</p>
+<section id="rule-1-must-run-as-a-non-root-user-uid-1000" class="level3">
+<h3 class="anchored" data-anchor-id="rule-1-must-run-as-a-non-root-user-uid-1000">Rule 1: Must Run as a Non-Root User (<code>UID 1000</code>)</h3>
+<p>Containers are <strong>forbidden from running as <code>root</code> (<code>UID 0</code>)</strong>. Every Pod spec must include this <code>securityContext</code> at the <strong>Pod level</strong> (<code>spec.template.spec.securityContext</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">securityContext</span><span class="kw">:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">runAsNonRoot</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">runAsUser</span><span class="kw">:</span><span class="at"> </span><span class="dv">1000</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">runAsGroup</span><span class="kw">:</span><span class="at"> </span><span class="dv">1000</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">seccompProfile</span><span class="kw">:</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> RuntimeDefault</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="rule-2-must-drop-linux-capabilities-privilege-escalation" class="level3">
+<h3 class="anchored" data-anchor-id="rule-2-must-drop-linux-capabilities-privilege-escalation">Rule 2: Must Drop Linux Capabilities &amp; Privilege Escalation</h3>
+<p>Every container inside <code>containers:</code> must include this <code>securityContext</code> at the <strong>Container level</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">securityContext</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">allowPrivilegeEscalation</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">capabilities</span><span class="kw">:</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">drop</span><span class="kw">:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="kw">-</span><span class="at"> ALL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="rule-3-must-mount-a-writable-app-or-tmp-directory-emptydir" class="level3">
+<h3 class="anchored" data-anchor-id="rule-3-must-mount-a-writable-app-or-tmp-directory-emptydir">Rule 3: Must Mount a Writable <code>/app</code> or <code>/tmp</code> Directory (<code>emptyDir</code>)</h3>
+<p>Because your container runs as user <code>1000</code> (not <code>root</code>), it <strong>cannot write files to <code>/</code> or <code>/root</code></strong> and cannot install packages globally (<code>pip install</code> or <code>install.packages()</code> into <code>/usr/local/lib</code> will fail with <code>Permission denied</code>). To solve this cleanly:</p>
+<ul>
+<li>Mount an <code>emptyDir: {}</code> volume at <code>/app</code>.</li>
+<li>Set <code>HOME=/app</code> (and <code>R_LIBS_USER=/app/R_libs</code> for R, or <code>pip install --user</code> with <code>PATH=/app/.local/bin:$PATH</code> for Python).</li>
+<li>All our templates in <code>templates/k8s/</code> already configure this automatically!</li>
+</ul>
+</section>
+<section id="rule-4-always-specify-resource-requests-and-limits" class="level3">
+<h3 class="anchored" data-anchor-id="rule-4-always-specify-resource-requests-and-limits">Rule 4: Always Specify Resource <code>requests</code> and <code>limits</code></h3>
+<p>Every container should state how much CPU, RAM (<code>memory</code>), and optionally GPU (<code>nvidia.com/gpu</code>) it needs:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">requests</span><span class="kw">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> </span><span class="st">"4"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> </span><span class="st">"8Gi"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">limits</span><span class="kw">:</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> </span><span class="st">"8"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> </span><span class="st">"16Gi"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Important:</strong> If your R or Python script uses more RAM than <code>limits.memory</code>, Kubernetes will terminate the container immediately with status <strong><code>OOMKilled</code> (Exit Code 137)</strong>. If that happens, increase <code>memory</code> in your YAML (e.g., from <code>16Gi</code> to <code>32Gi</code>).</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="namespace-resource-quotas-cerit-sc-limits" class="level2">
+<h2 class="anchored" data-anchor-id="namespace-resource-quotas-cerit-sc-limits">4. Namespace Resource Quotas &amp; CERIT-SC Limits</h2>
+<p>Every namespace on CERIT-SC Kubernetes has a total resource quota (<code>ResourceQuota</code>) shared across all <strong>currently running</strong> Pods in that namespace (<code>Completed</code>/<code>Succeeded</code> jobs do not consume quota):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Resource</th>
+<th style="text-align: left;">Personal Namespace Quota (<code>stenc-ns</code> / <code>&lt;user&gt;-ns</code>)</th>
+<th style="text-align: left;">Group Project Quota (on request via <code>k8s@cerit-sc.cz</code>)</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>requests.cpu</code></strong></td>
+<td style="text-align: left;"><strong>20 CPU cores</strong></td>
+<td style="text-align: left;">12–64+ CPU cores</td>
+<td style="text-align: left;">Guaranteed CPU cores reserved across all running pods</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>limits.cpu</code></strong></td>
+<td style="text-align: left;"><strong>32 CPU cores</strong></td>
+<td style="text-align: left;"><strong>64+ CPU cores</strong></td>
+<td style="text-align: left;">Maximum burst CPU ceiling across all running pods</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>requests.memory</code></strong></td>
+<td style="text-align: left;"><strong>40 GiB RAM</strong></td>
+<td style="text-align: left;">40–256+ GiB RAM</td>
+<td style="text-align: left;">Guaranteed RAM reserved across all running pods</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>limits.memory</code></strong></td>
+<td style="text-align: left;"><strong>64 GiB RAM</strong></td>
+<td style="text-align: left;"><strong>256+ GiB RAM</strong></td>
+<td style="text-align: left;">Maximum RAM ceiling across all running pods <em>(includes <code>/dev/shm</code> memory volumes)</em></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>nvidia.com/gpu</code></strong></td>
+<td style="text-align: left;"><strong>Uncapped in quota</strong> <em>(limited by CPU/RAM quota)</em></td>
+<td style="text-align: left;"><strong>Uncapped in quota</strong></td>
+<td style="text-align: left;">Multiple GPUs can run concurrently as long as pod CPU/RAM fits in the quota</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Default per container</strong></td>
+<td style="text-align: left;"><code>1 CPU</code> / <code>512 MiB</code></td>
+<td style="text-align: left;"><code>1 CPU</code> / <code>512 MiB</code></td>
+<td style="text-align: left;">Applied automatically by <code>LimitRange</code> if <code>resources:</code> is omitted</td>
+</tr>
+</tbody>
+</table>
+<section id="important-quota-tips-for-colleagues" class="level3">
+<h3 class="anchored" data-anchor-id="important-quota-tips-for-colleagues">Important Quota Tips for Colleagues:</h3>
+<ol type="1">
+<li><p><strong>Check Available Quota Before Submitting Large Jobs:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> describe resourcequota <span class="at">-n</span> stenc-ns</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If <code>limits.cpu</code> or <code>limits.memory</code> is near 100%, a new job will wait until running jobs finish.</p></li>
+<li><p><strong>Use Your Own Personal Namespace (<code>&lt;username&gt;-ns</code>) for Extra Capacity:</strong> When you log into <a href="https://rancher.cloud.e-infra.cz">https://rancher.cloud.e-infra.cz</a>, CERIT-SC automatically creates your own personal namespace (<code>&lt;surname&gt;-ns</code>) with its own independent <strong>20/32 CPU and 40/64 GiB RAM</strong> quota! You can copy the <code>s3-credentials</code> Secret into your personal namespace and run jobs using your own quota while still reading and writing data to our shared <code>peg-bucket</code> S3 storage.</p></li>
+<li><p><strong>Idle GPU Pruning Policy:</strong> Interactive pods/notebooks requesting a GPU with <code>&lt; 0.005</code> (0.5%) GPU utilization for 2 consecutive days are automatically terminated by CERIT-SC so GPUs are not locked while idle. Always use <code>kind: Job</code> for GPU training so the GPU is released as soon as your script finishes.</p></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="essential-kubectl-cheat-sheet" class="level2">
+<h2 class="anchored" data-anchor-id="essential-kubectl-cheat-sheet">5. Essential <code>kubectl</code> Cheat Sheet</h2>
+<p>All commands below assume you are working in namespace <code>stenc-ns</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">What You Want to Do</th>
+<th style="text-align: left;">Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>List all pods and their status</strong></td>
+<td style="text-align: left;"><code>kubectl get pods -n stenc-ns</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>List all batch jobs</strong></td>
+<td style="text-align: left;"><code>kubectl get jobs -n stenc-ns</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Submit / start a Job or Deployment</strong></td>
+<td style="text-align: left;"><code>kubectl apply -f my-job.yaml</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Stream live output logs from a Job</strong></td>
+<td style="text-align: left;"><code>kubectl logs -f job/&lt;job-name&gt; -n stenc-ns</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Stream live logs from a specific Pod</strong></td>
+<td style="text-align: left;"><code>kubectl logs -f &lt;pod-name&gt; -n stenc-ns</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>See why a Pod is stuck in <code>Pending</code> or crashed</strong></td>
+<td style="text-align: left;"><code>kubectl describe pod &lt;pod-name&gt; -n stenc-ns</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Open an interactive bash terminal inside a running Pod</strong></td>
+<td style="text-align: left;"><code>kubectl exec -it &lt;pod-name&gt; -n stenc-ns -- bash</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Delete a finished or failed Job</strong></td>
+<td style="text-align: left;"><code>kubectl delete job &lt;job-name&gt; -n stenc-ns</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>List ConfigMaps (uploaded scripts)</strong></td>
+<td style="text-align: left;"><code>kubectl get configmaps -n stenc-ns</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>List Secrets (S3 &amp; app credentials)</strong></td>
+<td style="text-align: left;"><code>kubectl get secrets -n stenc-ns</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Check CPU &amp; RAM usage of running Pods</strong></td>
+<td style="text-align: left;"><code>kubectl top pods -n stenc-ns</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="common-pod-statuses-explained" class="level2">
+<h2 class="anchored" data-anchor-id="common-pod-statuses-explained">6. Common Pod Statuses Explained</h2>
+<p>When you run <code>kubectl get pods -n stenc-ns</code>, look at the <code>STATUS</code> column:</p>
+<ul>
+<li><strong><code>Pending</code> / <code>ContainerCreating</code></strong>: Kubernetes is finding a node with enough free CPU/RAM/GPU and downloading the Docker image. If it stays <code>Pending</code> for &gt;5 minutes, run <code>kubectl describe pod &lt;pod-name&gt; -n stenc-ns</code> and look at the bottom <code>Events:</code> section (e.g., all GPUs on the cluster might currently be busy).</li>
+<li><strong><code>Running</code></strong>: Your script is actively executing! Run <code>kubectl logs -f &lt;pod-name&gt; -n stenc-ns</code> to watch its progress.</li>
+<li><strong><code>Completed</code></strong>: Your Job finished with Exit Code <code>0</code> (success).</li>
+<li><strong><code>Error</code> / <code>CrashLoopBackOff</code></strong>: Your script threw an exception or syntax error. Run <code>kubectl logs &lt;pod-name&gt; -n stenc-ns</code> to read the R/Python traceback.</li>
+<li><strong><code>OOMKilled</code></strong>: Your script exceeded the <code>memory</code> limit defined in your YAML. Increase <code>resources.limits.memory</code> and re-submit.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Pollination Ecology Group (Handrkov) — Charles University &amp; CAS</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Powered by Quarto &amp; CESNET e-INFRA CZ</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

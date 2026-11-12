@@ -1,0 +1,102 @@
+# ==============================================================================
+# python-cpu-job.yaml — Template for Running a Python Script on CESNET K8s (CPU)
+# ==============================================================================
+# How to use:
+#   1. Upload your Python script (e.g. process_data.py) into a ConfigMap:
+#        kubectl create configmap my-python-script -n stenc-ns \
+#          --from-file=process_data.py=process_data.py \
+#          --dry-run=client -o yaml | kubectl apply -f -
+#
+#   2. Submit this job:
+#        kubectl delete job python-cpu-job -n stenc-ns --ignore-not-found
+#        kubectl apply -f python-cpu-job.yaml
+#
+#   3. Watch live output logs:
+#        kubectl logs -f job/python-cpu-job -n stenc-ns
+# ==============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: python-cpu-job
+  namespace: stenc-ns
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      # Mandatory CERIT-SC Pod security context (must run as non-root user)
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: python-worker
+        image: python:3.12-slim
+        imagePullPolicy: IfNotPresent
+        workingDir: /app/workspace
+        # Mandatory CERIT-SC Container security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "=== Setting up non-root workspace ==="
+          export HOME=/app
+          export PATH=/app/.local/bin:$PATH
+          mkdir -p /app/workspace
+          cd /app/workspace
+
+          echo "=== Installing Python dependencies ==="
+          pip install --user --quiet --no-warn-script-location \
+            boto3 awscli pandas numpy scipy scikit-learn tqdm
+
+          echo "=== Running Python script (/scripts/process_data.py) ==="
+          python3 -u /scripts/process_data.py
+
+          echo "=== Job completed successfully! ==="
+        env:
+        - name: HOME
+          value: "/app"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: S3_ENDPOINT
+          value: "https://s3.cl4.du.cesnet.cz"
+        - name: S3_BUCKET
+          value: "peg-bucket"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: access-key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: secret-key
+        resources:
+          requests:
+            cpu: "4"
+            memory: "8Gi"
+          limits:
+            cpu: "8"
+            memory: "16Gi"
+        volumeMounts:
+        - name: scripts-vol
+          mountPath: /scripts
+          readOnly: true
+        - name: app-vol
+          mountPath: /app
+      volumes:
+      - name: scripts-vol
+        configMap:
+          name: my-python-script
+      - name: app-vol
+        emptyDir: {}
+

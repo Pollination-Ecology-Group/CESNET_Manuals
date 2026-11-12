@@ -1,0 +1,7 @@
+/.quarto/
+*.log
+*.aux
+*.toc
+*.out
+.DS_Store
+*~

@@ -160,7 +160,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a></li>
+  <li><a href="#what-is-cesnet-e-infra-cz-why-do-we-use-it" id="toc-what-is-cesnet-e-infra-cz-why-do-we-use-it" class="nav-link active" data-scroll-target="#what-is-cesnet-e-infra-cz-why-do-we-use-it">What is CESNET (e-INFRA CZ) &amp; Why Do We Use It?</a>
+  <ul class="collapse">
+  <li><a href="#which-tool-do-i-need" id="toc-which-tool-do-i-need" class="nav-link" data-scroll-target="#which-tool-do-i-need">Which Tool Do I Need?</a></li>
+  </ul></li>
   <li><a href="#manual-suite-overview" id="toc-manual-suite-overview" class="nav-link" data-scroll-target="#manual-suite-overview">Manual Suite Overview</a></li>
   <li><a href="#ready-to-use-templates-templates" id="toc-ready-to-use-templates-templates" class="nav-link" data-scroll-target="#ready-to-use-templates-templates">Ready-to-Use Templates (<code>templates/</code>)</a>
   <ul class="collapse">
@@ -206,11 +209,67 @@ ul.task-list li input[type="checkbox"] {
   </p>
   <a href="02_Kubernetes_Getting_Started.html" class="btn">Set Up Rancher &amp; kubectl</a>
 </div>
-<section id="welcome" class="level1">
-<h1>Welcome</h1>
-<p>Welcome to the practical manuals for using <strong>CESNET Object Storage (S3)</strong> and <strong>CESNET / e-INFRA CZ Kubernetes (CERIT-SC)</strong> in our research group.</p>
-<p>These guides are written for all members of the lab—whether you want to browse or upload field datasets using a graphical interface on Windows/macOS, read <code>.rds</code>/<code>.csv</code> files directly into R or Python, run heavy CPU/GPU scripts on the cluster without building Docker containers, or deploy interactive web applications.</p>
+<section id="what-is-cesnet-e-infra-cz-why-do-we-use-it" class="level1">
+<h1>What is CESNET (e-INFRA CZ) &amp; Why Do We Use It?</h1>
+<p><strong>CESNET</strong> (part of the Czech national academic infrastructure <strong>e-INFRA CZ</strong>, together with <strong>CERIT-SC</strong> and <strong>MetaCentrum</strong>) provides cloud storage, high-performance computing, and GPU clusters <strong>free of charge</strong> to all researchers and students at Czech universities (Charles University) and the Czech Academy of Sciences (CAS).</p>
+<p>Instead of storing terabytes of photos on external USB drives or letting long R/Python scripts freeze our personal laptops for days, our group uses two core CESNET services that work together:</p>
+<ol type="1">
+<li><strong>Central Group Data Storage — CESNET S3 (<code>peg-bucket</code>):</strong>
+<ul>
+<li><strong>What it is:</strong> A shared, terabyte-scale cloud object storage system (<code>https://s3.cl4.du.cesnet.cz</code>).</li>
+<li><strong>Why use it:</strong> High-resolution microscopy scans (<code>.czi</code>), pollinator camera recordings, and multi-year field datasets are too large for laptops, email, or standard Google Drive quotas. On CESNET S3, everyone in the group can access the same organized datasets from Windows, macOS, Linux, or directly inside R and Python scripts without duplicating files on their own hard drive.</li>
+</ul></li>
+<li><strong>Cloud Compute &amp; GPU Cluster — CERIT-SC Kubernetes (<code>kuba-cluster</code> / <code>stenc-ns</code>):</strong>
+<ul>
+<li><strong>What it is:</strong> A container cluster managed through a web dashboard (<a href="https://rancher.cloud.e-infra.cz">rancher.cloud.e-infra.cz</a>) and the <code>kubectl</code> command-line tool.</li>
+<li><strong>Why use it:</strong>
+<ul>
+<li><strong>Run heavy R &amp; Python scripts in the background:</strong> Allocate up to <strong>32 CPU cores and 64 GiB RAM</strong> (per personal namespace) for null-model network simulations, Bayesian models (<code>brms</code>/<code>Stan</code>), or large data aggregations—and turn off your laptop while the cluster works.</li>
+<li><strong>Train Deep Learning models on fast NVIDIA GPUs:</strong> Request enterprise GPUs (NVIDIA A40, A100, H100) for computer vision pipelines (YOLO pollen detection, hoverfly tracking, stomata &amp; root segmentation) that would take weeks on a CPU.</li>
+<li><strong>Host 24/7 Web Apps for the Team:</strong> Run interactive web tools (such as our Pollen, Stomata, Fly, and RhizoPic labeling/review apps, or R Shiny / Streamlit dashboards) with public <code>https://*.dyn.cloud.e-infra.cz</code> links so collaborators and students can annotate data directly in their browser.</li>
+</ul></li>
+</ul></li>
+</ol>
+<section id="which-tool-do-i-need" class="level3">
+<h3 class="anchored" data-anchor-id="which-tool-do-i-need">Which Tool Do I Need?</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Your Goal</th>
+<th style="text-align: left;">What to Use</th>
+<th style="text-align: left;">Where to Start</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>“I just want to browse, download, or back up project files &amp; photos”</strong></td>
+<td style="text-align: left;">CESNET S3 via Cyberduck / WinSCP (GUI) or <code>rclone</code> / <code>s3fs</code></td>
+<td style="text-align: left;"><a href="01_CESNET_S3_Storage_Manual.html">Manual 1: S3 Storage</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>“I want my R or Python script on my laptop to load data directly from our group storage”</strong></td>
+<td style="text-align: left;"><code>aws.s3</code> (R) or <code>boto3</code> (Python) connected to <code>peg-bucket</code></td>
+<td style="text-align: left;"><a href="01_CESNET_S3_Storage_Manual.html#method-d-reading-writing-directly-from-r-and-python">Manual 1 (Section 6)</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>“My R/Python script is too slow, needs 16–64 GB RAM, or I want to run it overnight”</strong></td>
+<td style="text-align: left;">CERIT-SC Kubernetes CPU Job (<code>run_script_on_k8s.sh</code>)</td>
+<td style="text-align: left;"><a href="02_Kubernetes_Getting_Started.html">Manual 2</a> &amp; <a href="03_Running_R_and_Python_Scripts_on_K8s.html">Manual 3</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>“I need an NVIDIA GPU to train or run a YOLO / PyTorch model”</strong></td>
+<td style="text-align: left;">CERIT-SC Kubernetes GPU Job (<code>python-gpu-job.yaml</code>)</td>
+<td style="text-align: left;"><a href="03_Running_R_and_Python_Scripts_on_K8s.html#step-by-step-running-a-gpu-job-yolo-pytorch-deep-learning">Manual 3 (Section 4)</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>“I want to publish an interactive web app, review tool, or Shiny/Streamlit dashboard”</strong></td>
+<td style="text-align: left;">Kubernetes <code>Deployment</code> + <code>Service</code> + HTTPS <code>Ingress</code></td>
+<td style="text-align: left;"><a href="04_Deploying_Web_Apps_on_K8s.html">Manual 4: Web Apps</a></td>
+</tr>
+</tbody>
+</table>
 <hr>
+</section>
 </section>
 <section id="manual-suite-overview" class="level1">
 <h1>Manual Suite Overview</h1>

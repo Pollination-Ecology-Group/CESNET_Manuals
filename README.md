@@ -1,8 +1,32 @@
 # CESNET & Kubernetes Manuals (Pollination Ecology Group / Handrkov)
 
-Welcome to the practical manuals for using **CESNET Object Storage (S3)** and **CESNET / e-INFRA CZ Kubernetes (CERIT-SC)** in our research group.
+**Live Website:** [https://pollination-ecology-group.github.io/CESNET_Manuals/](https://pollination-ecology-group.github.io/CESNET_Manuals/)
 
-These guides are written for all members of the lab—whether you just want to browse or upload field datasets using a graphical interface on Windows/macOS, read `.rds`/`.csv` files directly into R or Python, run heavy CPU/GPU scripts on the cluster without building Docker containers, or deploy interactive web applications.
+## What is CESNET (e-INFRA CZ) & Why Do We Use It?
+
+**CESNET** (part of the Czech national academic infrastructure **e-INFRA CZ**, together with **CERIT-SC** and **MetaCentrum**) provides high-capacity cloud storage, multi-core servers, and GPU clusters **free of charge** to all researchers and students at Czech universities (Charles University) and the Czech Academy of Sciences (CAS).
+
+Instead of storing terabytes of photos on external USB drives or letting long R/Python scripts freeze our personal laptops for days, our group uses two core CESNET services that work together:
+
+1. **Central Group Data Storage — CESNET S3 (`peg-bucket`):**
+   * **What it is:** A shared, terabyte-scale cloud object storage system (`https://s3.cl4.du.cesnet.cz`).
+   * **Why use it:** High-resolution microscopy scans (`.czi`), pollinator camera recordings, and multi-year field datasets are too large for laptops, email, or standard Google Drive quotas. On CESNET S3, everyone in the group can access the same organized datasets from Windows, macOS, Linux, or directly inside R and Python scripts without duplicating files on their own hard drive.
+2. **Cloud Compute & GPU Cluster — CERIT-SC Kubernetes (`kuba-cluster` / `stenc-ns`):**
+   * **What it is:** A container cluster managed through a web dashboard ([rancher.cloud.e-infra.cz](https://rancher.cloud.e-infra.cz)) and the `kubectl` command-line tool.
+   * **Why use it:**
+     * **Run heavy R & Python scripts in the background:** Allocate up to **32 CPU cores and 64 GiB RAM** (per personal namespace) for null-model network simulations, Bayesian models (`brms`/`Stan`), or large data aggregations—and turn off your laptop while the cluster works.
+     * **Train Deep Learning models on fast NVIDIA GPUs:** Request enterprise GPUs (NVIDIA A40, A100, H100) for computer vision pipelines (YOLO pollen detection, hoverfly tracking, stomata & root segmentation) that would take weeks on a CPU.
+     * **Host 24/7 Web Apps for the Team:** Run interactive web tools (such as our Pollen, Stomata, Fly, and RhizoPic labeling/review apps, or R Shiny / Streamlit dashboards) with public `https://*.dyn.cloud.e-infra.cz` links so collaborators and students can annotate data directly in their browser.
+
+### Which Tool Do I Need?
+
+| Your Goal | What to Use | Where to Start |
+| :--- | :--- | :--- |
+| **"I just want to browse, download, or back up project files & photos"** | CESNET S3 via Cyberduck / WinSCP (GUI) or `rclone` / `s3fs` | [01_CESNET_S3_Storage_Manual.md](01_CESNET_S3_Storage_Manual.md) |
+| **"I want my R or Python script on my laptop to load data directly from our group storage"** | `aws.s3` (R) or `boto3` (Python) connected to `peg-bucket` | [01_CESNET_S3_Storage_Manual.md](01_CESNET_S3_Storage_Manual.md) |
+| **"My R/Python script is too slow, needs 16–64 GB RAM, or I want to run it overnight"** | CERIT-SC Kubernetes CPU Job (`run_script_on_k8s.sh`) | [02_Kubernetes_Getting_Started.md](02_Kubernetes_Getting_Started.md) & [03_Running_R_and_Python_Scripts_on_K8s.md](03_Running_R_and_Python_Scripts_on_K8s.md) |
+| **"I need an NVIDIA GPU to train or run a YOLO / PyTorch model"** | CERIT-SC Kubernetes GPU Job (`python-gpu-job.yaml`) | [03_Running_R_and_Python_Scripts_on_K8s.md](03_Running_R_and_Python_Scripts_on_K8s.md) |
+| **"I want to publish an interactive web app, review tool, or Shiny/Streamlit dashboard"** | Kubernetes `Deployment` + `Service` + HTTPS `Ingress` | [04_Deploying_Web_Apps_on_K8s.md](04_Deploying_Web_Apps_on_K8s.md) |
 
 ---
 

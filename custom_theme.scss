@@ -186,13 +186,25 @@ code {
 }
 
 div.sourceCode,
-pre {
+pre:not(.sourceCode) {
   background-color: #f4f7f6 !important;
-  border: 1px solid rgba(64, 105, 91, 0.25) !important;
-  border-left: 5px solid $blue !important;
+  border: 1px solid rgba(64, 105, 91, 0.22) !important;
+  border-left: 4px solid $blue !important;
   border-radius: 8px;
-  padding: 10px;
+  margin: 1em 0;
   overflow: auto;
+}
+
+pre:not(.sourceCode) {
+  padding: 14px 16px;
+}
+
+div.sourceCode pre.sourceCode {
+  background-color: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 14px 16px !important;
+  border-radius: 0 !important;
 }
 
 pre code {
@@ -335,3 +347,4 @@ pre code {
   height: 6px;
   background: linear-gradient(90deg, #40695B, #354e6b);
 }
+

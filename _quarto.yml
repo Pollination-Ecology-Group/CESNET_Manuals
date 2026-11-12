@@ -1,3 +1,5 @@
+lang: en
+
 project:
   type: website
   output-dir: docs
@@ -8,7 +10,9 @@ project:
     - 03_Running_R_and_Python_Scripts_on_K8s.qmd
     - 04_Deploying_Web_Apps_on_K8s.qmd
   resources:
+    - ".nojekyll"
     - "*.pdf"
+    - "images/**"
     - "01_CESNET_S3_Storage_Manual.md"
     - "02_Kubernetes_Getting_Started.md"
     - "03_Running_R_and_Python_Scripts_on_K8s.md"
@@ -16,9 +20,11 @@ project:
     - "templates/**"
 
 website:
-  title: "CESNET S3 & K8s Manuals"
+  title: "Handrkov · CESNET & K8s Manuals"
+  page-navigation: true
   navbar:
-    background: primary
+    logo-alt: "Opylovači Handrkov"
+    background: rgb(64, 105, 91)
     search: true
     left:
       - href: index.qmd
@@ -32,15 +38,43 @@ website:
       - href: 04_Deploying_Web_Apps_on_K8s.qmd
         text: "4. Web Apps"
     right:
+      - text: "Handrkov Web"
+        href: https://pollination-ecology-group.github.io/Handrkov/
       - icon: github
         href: https://github.com/Pollination-Ecology-Group/CESNET_Manuals
+      - icon: whatsapp
+        href: https://wa.me/420774553734
+      - icon: instagram
+        href: https://www.instagram.com/opylovaci_handrkov_/
+      - icon: spotify
+        href: https://open.spotify.com/show/3ypxSzPMkd4TOepn3oTrVl
+      - icon: youtube
+        href: https://www.youtube.com/@opylovaci_podcast
+
   page-footer:
-    left: "Pollination Ecology Group (Handrkov) — Charles University & CAS"
-    right: "Powered by Quarto & CESNET e-INFRA CZ"
+    left: "Made by Jakub Štenc and Quarto"
+    right:
+      - icon: github
+        href: https://github.com/Pollination-Ecology-Group
+      - icon: whatsapp
+        href: https://wa.me/420774553734
+      - icon: instagram
+        href: https://www.instagram.com/opylovaci_handrkov_/
+      - icon: spotify
+        href: https://open.spotify.com/show/3ypxSzPMkd4TOepn3oTrVl
+      - icon: youtube
+        href: https://www.youtube.com/@opylovaci_podcast
 
 format:
   html:
-    theme: cosmo
+    fontsize: 1.15rem
+    monofont: Fira Code
+    highlight-style: arrow
+    theme: custom_theme.scss
     toc: true
-    toc-depth: 3
+    code-overflow: scroll
     code-copy: true
+    linkcolor: rgb(97,30,30)
+    background: "#40695B"
+    toc-depth: 4
+    anchor-sections: true

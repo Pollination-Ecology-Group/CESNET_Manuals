@@ -95,7 +95,7 @@
     "href": "index.html",
     "title": "CESNET S3 & Kubernetes Manuals",
     "section": "",
-    "text": "Welcome to the practical manuals for using CESNET Object Storage (S3) and CESNET / e-INFRA CZ Kubernetes (CERIT-SC) in our research group.\nThese guides are written for all members of the lab—whether you want to browse or upload field datasets using a graphical interface on Windows/macOS, read .rds/.csv files directly into R or Python, run heavy CPU/GPU scripts on the cluster without building Docker containers, or deploy interactive web applications."
+    "text": "Pollination Ecology Group (Handrkov) — Practical Handbook & Templates\nPollination Ecology Group\n\n2026-11-12"
   },
   {
     "objectID": "index.html#s3-storage-templates-templatess3",

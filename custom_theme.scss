@@ -1,0 +1,337 @@
+/*-- scss:defaults --*/
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tilt+Warp&family=Fira+Code:wght@400;500&display=swap");
+
+// Vertical spacing between blocks of text
+$smallMargin: 5px;
+$blockMargin: 10px;
+$largeMargin: 20px;
+
+// Colors loaded from _colors.scss (Handrkov palette)
+@import "_colors";
+
+#quarto-document-content {
+  text-align: left;
+}
+
+.text-background-white {
+  background-color: $white;
+  color: $black;
+  padding: $smallMargin;
+  border-radius: $smallMargin;
+}
+
+.text-background-black {
+  background-color: $black;
+  color: $white;
+  padding: $smallMargin;
+  border-radius: $smallMargin;
+}
+
+.text-background-blue {
+  background-color: $blue;
+  color: $white;
+  padding: $smallMargin;
+  border-radius: $smallMargin;
+}
+
+.text-background-purple {
+  background-color: $purple;
+  color: $white;
+  padding: $smallMargin;
+  border-radius: $smallMargin;
+}
+
+.text-background-red {
+  background-color: $red;
+  color: $white;
+  padding: $smallMargin;
+  border-radius: $smallMargin;
+}
+
+.text-background-pink {
+  background-color: $pink;
+  color: $white;
+  padding: $smallMargin;
+  border-radius: $smallMargin;
+}
+
+.text-background-brown {
+  background-color: $brown;
+  color: $white;
+  padding: $smallMargin;
+  border-radius: $smallMargin;
+}
+
+.text-background-yellow {
+  background-color: $yellow;
+  color: $black;
+  padding: $smallMargin;
+  border-radius: $smallMargin;
+}
+
+.text-color-white { color: $white; }
+.text-color-black { color: $black; }
+.text-color-blue { color: $blue; }
+.text-color-purple { color: $purple; }
+.text-color-red { color: $red; }
+.text-color-pink { color: $pink; }
+.text-color-brown { color: $brown; }
+.text-color-yellow { color: $yellow; }
+
+$body-color: $black;
+$backgroundColor: $white;
+
+// Typography (Handrkov web typography)
+$mainFont: "Inter", sans-serif !default;
+$mainFontSize: 12pt;
+$body-line-height: 1.6;
+
+$headingMargin: 0;
+$headingFont: "Tilt Warp", sans-serif !default;
+$headingLineHeight: 1.25;
+$headingLetterSpacing: normal;
+$headingTextShadow: none;
+$headingFontWeight: 600;
+
+$heading1Size: 28pt;
+$heading2Size: 22pt;
+$heading3Size: 17pt;
+$heading4Size: 15pt;
+$heading5Size: 13pt;
+$heading6Size: 12pt;
+
+/*-- scss:rules --*/
+
+.banner {
+  max-width: 100%;
+  max-height: auto;
+}
+
+body {
+  font-family: $mainFont;
+  font-size: $mainFontSize;
+  line-height: $body-line-height;
+  color: $body-color;
+  background-color: $backgroundColor;
+  margin: 0;
+  padding: 0;
+}
+
+main a:not(.btn) {
+  color: rgb(97, 30, 30);
+  text-decoration: underline !important;
+
+  &:hover {
+    color: $white !important;
+    background-color: $blue !important;
+    border-radius: 3px;
+  }
+}
+
+/* Headings */
+h1 {
+  font-family: $headingFont;
+  font-size: $heading1Size;
+  line-height: $headingLineHeight;
+  letter-spacing: $headingLetterSpacing;
+  font-weight: $headingFontWeight;
+  margin-top: $largeMargin;
+  color: $blue;
+  text-align: center;
+}
+
+h2 {
+  font-family: $headingFont;
+  font-size: $heading2Size;
+  line-height: $headingLineHeight;
+  letter-spacing: $headingLetterSpacing;
+  font-weight: $headingFontWeight;
+  margin-top: 1.8rem;
+  color: $blue;
+  text-align: center;
+  border-bottom: 2px solid rgba(64, 105, 91, 0.2);
+  padding-bottom: 0.4rem;
+}
+
+h3 {
+  font-family: $headingFont;
+  font-size: $heading3Size;
+  margin-top: 1.4rem;
+  color: #354e6b;
+}
+
+h4 {
+  font-family: $headingFont;
+  font-size: $heading4Size;
+  line-height: $headingLineHeight;
+  font-weight: $headingFontWeight;
+  margin-top: $blockMargin;
+  color: #354e6b;
+}
+
+/* Hide TOC title ("On this page") but keep TOC items, matching Handrkov */
+#toc-title {
+  display: none !important;
+}
+
+/* Code blocks and inline code styled with Handrkov palette */
+code {
+  font-family: "Fira Code", monospace;
+  background-color: rgba(64, 105, 91, 0.12) !important;
+  color: #264339;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+
+div.sourceCode,
+pre {
+  background-color: #f4f7f6 !important;
+  border: 1px solid rgba(64, 105, 91, 0.25) !important;
+  border-left: 5px solid $blue !important;
+  border-radius: 8px;
+  padding: 10px;
+  overflow: auto;
+}
+
+pre code {
+  background-color: transparent !important;
+  color: $black;
+  padding: 0;
+}
+
+/* Tables */
+.table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(64, 105, 91, 0.08);
+}
+
+.table thead th {
+  background-color: $blue;
+  color: $white;
+  border-bottom: none;
+}
+
+/* Navbar (Exact Handrkov style) */
+.navbar {
+  background: $blue !important;
+  font-family: $headingFont !important;
+  font-size: 19px !important;
+  color: $white !important;
+  padding: 10px 0 !important;
+
+  a {
+    color: $white !important;
+    text-decoration: none !important;
+    padding: 10px !important;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+}
+
+.navbar-logo {
+  max-height: 70px;
+}
+
+.navbar .dropdown-menu .dropdown-item {
+  color: $white !important;
+}
+
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar .dropdown-menu .dropdown-item:focus {
+  background-color: darken($blue, 10%) !important;
+  color: $white !important;
+}
+
+.btn {
+  background-color: $blue;
+  color: $white !important;
+  border-color: $blue;
+  border-radius: 50px;
+  padding: 10px 26px;
+  font-weight: 600;
+  text-decoration: none !important;
+
+  &:hover {
+    background-color: #354e6b !important;
+    color: $white !important;
+    border-color: #354e6b;
+  }
+}
+
+/* Hero Section (Handrkov style) */
+.hero-section {
+  position: relative;
+  height: 44vh;
+  min-height: 290px;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  background-color: #264339;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 40px -10px rgba(64, 105, 91, 0.35);
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  filter: brightness(0.62);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 850px;
+  padding: 24px;
+}
+
+.hero-content h1 {
+  font-size: 2.8em;
+  font-weight: 700;
+  margin-bottom: 0.4em;
+  color: white !important;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.75);
+  line-height: 1.2;
+}
+
+.hero-content p {
+  font-size: 1.25em;
+  margin-bottom: 1.2em;
+  color: #f0f0f0;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.75);
+}
+
+/* Handrkov Feature Cards */
+.handrkov-card {
+  margin: 2rem auto;
+  padding: 28px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px -10px rgba(53, 78, 107, 0.15);
+  border: 1px solid rgba(53, 78, 107, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.handrkov-card-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #40695B, #354e6b);
+}

@@ -7,14 +7,39 @@ format:
   html:
     toc: true
     toc-depth: 3
-    theme: cosmo
     code-copy: true
+    title-block-style: none
   pdf:
     toc: true
     colorlinks: true
     geometry:
       - margin=2.2cm
 ---
+
+::: {.content-visible when-format="html"}
+```{=html}
+<div class="hero-section">
+  <img src="images/handrkov_hero.jpg" alt="Handrkov Meadow" class="hero-bg" />
+  <div class="hero-content">
+    <h1>CESNET S3 &amp; Kubernetes Manuals</h1>
+    <p>Pollination Ecology Group &middot; Handrkov Field Research &amp; Cloud Computing Hub</p>
+    <a href="01_CESNET_S3_Storage_Manual.html" class="btn">1. S3 Storage Guide</a>
+    <a href="03_Running_R_and_Python_Scripts_on_K8s.html" class="btn" style="margin-left: 10px;">3. Run R &amp; Python on K8s</a>
+  </div>
+</div>
+
+<div class="handrkov-card" style="text-align: center; max-width: 780px;">
+  <div class="handrkov-card-bar"></div>
+  <h3 style="color: #354e6b; font-weight: 700; margin-top: 6px; margin-bottom: 12px; font-size: 1.35rem;">
+    Quick Start for Colleagues
+  </h3>
+  <p style="color: #495057; margin-bottom: 18px; font-size: 1.05rem;">
+    All raw datasets, microscopy scans, and model outputs are stored on <strong>CESNET S3 (<code>peg-bucket</code>)</strong>, while heavy R/Python analyses, GPU training, and web apps run on <strong>CERIT-SC Kubernetes (<code>stenc-ns</code>)</strong>.
+  </p>
+  <a href="02_Kubernetes_Getting_Started.html" class="btn">Set Up Rancher &amp; kubectl</a>
+</div>
+```
+:::
 
 # Welcome
 
